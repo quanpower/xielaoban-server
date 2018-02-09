@@ -4,21 +4,42 @@ from mongoengine.queryset import queryset_manager
 from application.extensions import db
 from application.utils import format_date
 
+from app import db, login_manager
+
 __all__ = ['Banner']
 
-class Banner(db.Document):
+
+
+class Role(db.Model):
+    __tablename__ = 'roles'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), unique=True)
+    default = db.Column(db.Boolean, default=False, index=True)
+    permissions = db.Column(db.Integer)
+    users = db.relationship('User', backref='role', lazy='dynamic')
+
+    def __init__(self, **kwargs):
+        super(Role, self).__init__(**kwargs)
+        if self.permissions is None:
+            self.permissions = 0
+
+
+class Banner(db.Model):
+    __tablename__ = 'banners'
+
     meta = {
         'db_alias': 'content_db',
         'indexes': ['published']
     }
-    created_at = db.DateTimeField(
+    id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(db.DateTimeField(
         default=datetime.datetime.utcnow, required=True)
     banner_type = db.StringField(default="BOARD", choices=['BOARD', 'URL'])
     target = db.StringField()
     img = db.StringField()
     date_from = db.DateTimeField(default=datetime.datetime.today())
     date_until = db.DateTimeField(default=datetime.datetime(2029, 12, 30))
-    published = db.BooleanField(default=True)
+    published = db.Column(db.Boolean, default=True)
     order = db.SequenceField()
 
     def __repr__(self):
