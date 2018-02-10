@@ -32,8 +32,7 @@ class Banner(db.Model):
         'indexes': ['published']
     }
     id = db.Column(db.Integer, primary_key=True)
-    created_at = db.Column(db.DateTimeField(
-        default=datetime.datetime.utcnow, required=True)
+    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     banner_type = db.StringField(default="BOARD", choices=['BOARD', 'URL'])
     target = db.StringField()
     img = db.StringField()
