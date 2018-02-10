@@ -27,10 +27,7 @@ class Role(db.Model):
 class Banner(db.Model):
     __tablename__ = 'banners'
 
-    meta = {
-        'db_alias': 'content_db',
-        'indexes': ['published']
-    }
+
     id = db.Column(db.Integer, primary_key=True)
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     banner_type = db.StringField(default="BOARD", choices=['BOARD', 'URL'])
